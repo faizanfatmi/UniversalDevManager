@@ -2,9 +2,16 @@
 
 import platform
 
-from udm.platform import is_windows, is_linux, is_mac, run_command, add_to_path, resolve_env_path
 from udm.installer.callbacks import log
-from udm.installer.prerequisites import ensure_homebrew, ensure_apt_updated
+from udm.installer.prerequisites import ensure_apt_updated, ensure_homebrew
+from udm.platform import (
+    add_to_path,
+    is_linux,
+    is_mac,
+    is_windows,
+    resolve_env_path,
+    run_command,
+)
 
 
 def _get_install_cmd(tool: dict) -> str:
@@ -54,7 +61,11 @@ def install_tool(tool: dict) -> bool:
     combined = (out + err).lower()
     if rc == 0:
         return True
-    if "already installed" in combined or "no upgrade" in combined or "is already the newest" in combined:
+    if (
+        "already installed" in combined
+        or "no upgrade" in combined
+        or "is already the newest" in combined
+    ):
         log(f"  {name} appears already installed (package manager says so).")
         return True
 
@@ -68,7 +79,13 @@ def setup_path(tool: dict) -> bool:
     if not tool.get("path_required", False):
         return True
 
-    key = "path_dirs_windows" if is_windows() else "path_dirs_linux" if is_linux() else "path_dirs_mac"
+    key = (
+        "path_dirs_windows"
+        if is_windows()
+        else "path_dirs_linux"
+        if is_linux()
+        else "path_dirs_mac"
+    )
     dirs = tool.get(key, [])
     if not dirs:
         return True

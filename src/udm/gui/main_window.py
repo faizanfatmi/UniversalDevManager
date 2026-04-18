@@ -3,26 +3,32 @@
 import sys
 import threading
 
-from PySide6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QMessageBox
-from PySide6.QtCore import Qt, Signal, QObject, Slot
+from PySide6.QtCore import QObject, Qt, Signal, Slot
+from PySide6.QtWidgets import QMainWindow, QMessageBox, QVBoxLayout, QWidget
 
-from udm.constants import WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT, MIN_WIDTH, MIN_HEIGHT
-from udm.config import load_tools, get_categories
-from udm.network import check_internet
-from udm.logger import logger
-from udm.installer import install_selected, set_progress_callback, set_log_callback
-
-from udm.gui.theme import build_stylesheet
-from udm.gui.header import HeaderBar
-from udm.gui.search_bar import SearchBar
-from udm.gui.tool_table import ToolTable
-from udm.gui.log_panel import LogPanel
-from udm.gui.status_bar import StatusBar
+from udm.config import get_categories, load_tools
+from udm.constants import (
+    MIN_HEIGHT,
+    MIN_WIDTH,
+    WINDOW_HEIGHT,
+    WINDOW_TITLE,
+    WINDOW_WIDTH,
+)
 from udm.gui.action_bar import ActionBar
+from udm.gui.header import HeaderBar
+from udm.gui.log_panel import LogPanel
+from udm.gui.search_bar import SearchBar
+from udm.gui.status_bar import StatusBar
+from udm.gui.theme import build_stylesheet
+from udm.gui.tool_table import ToolTable
+from udm.installer import install_selected, set_log_callback, set_progress_callback
+from udm.logger import logger
+from udm.network import check_internet
 
 
 class WorkerSignals(QObject):
     """Signals for cross-thread communication."""
+
     progress = Signal(str, str, int)
     log_message = Signal(str)
     finished = Signal(dict)
@@ -95,9 +101,7 @@ class MainWindow(QMainWindow):
         set_progress_callback(
             lambda tool, status, pct: self._signals.progress.emit(tool, status, pct)
         )
-        set_log_callback(
-            lambda msg: self._signals.log_message.emit(msg)
-        )
+        set_log_callback(lambda msg: self._signals.log_message.emit(msg))
 
     def _apply_filter(self):
         query = self.search_bar.search_text()
@@ -121,7 +125,9 @@ class MainWindow(QMainWindow):
     def _on_install(self):
         tools = self.tool_table.selected_tools()
         if not tools:
-            QMessageBox.warning(self, "Nothing selected", "Select at least one tool first.")
+            QMessageBox.warning(
+                self, "Nothing selected", "Select at least one tool first."
+            )
             return
         if self._installing:
             QMessageBox.information(self, "Busy", "An installation is already running.")
@@ -129,7 +135,9 @@ class MainWindow(QMainWindow):
 
         self.log_panel.append_log("Checking internet connection…")
         if not check_internet():
-            QMessageBox.critical(self, "No Internet", "Please connect to the internet and try again.")
+            QMessageBox.critical(
+                self, "No Internet", "Please connect to the internet and try again."
+            )
             self.log_panel.append_log("✗ No internet — aborted.")
             return
 
@@ -188,7 +196,8 @@ class MainWindow(QMainWindow):
     def closeEvent(self, event):
         if self._installing:
             reply = QMessageBox.question(
-                self, "Confirm",
+                self,
+                "Confirm",
                 "Installation in progress. Force exit?",
                 QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
             )

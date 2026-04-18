@@ -3,7 +3,7 @@
 import sys
 
 from udm.logger import logger
-from udm.platform import is_windows, is_admin, request_admin
+from udm.platform import is_admin, is_windows, request_admin
 
 
 def main():
@@ -24,6 +24,7 @@ def main():
             )
 
     from PySide6.QtWidgets import QApplication
+
     from udm.gui import MainWindow
 
     app = QApplication(sys.argv)

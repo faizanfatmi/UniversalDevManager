@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 
 from udm.logger import logger
-from udm.platform.detect import is_windows, is_linux, is_mac
+from udm.platform.detect import is_linux, is_mac, is_windows
 
 
 def resolve_env_path(p: str) -> str:
@@ -22,6 +22,7 @@ def resolve_env_path(p: str) -> str:
 def _windows_get_user_path() -> str:
     """Read the current user PATH from the registry."""
     import winreg
+
     try:
         with winreg.OpenKey(
             winreg.HKEY_CURRENT_USER, r"Environment", 0, winreg.KEY_READ
@@ -35,18 +36,25 @@ def _windows_get_user_path() -> str:
 def _windows_set_user_path(new_path: str) -> bool:
     """Write *new_path* to the user PATH in the registry and broadcast."""
     import winreg
+
     try:
         with winreg.OpenKey(
             winreg.HKEY_CURRENT_USER, r"Environment", 0, winreg.KEY_SET_VALUE
         ) as key:
             winreg.SetValueEx(key, "Path", 0, winreg.REG_EXPAND_SZ, new_path)
         import ctypes
+
         HWND_BROADCAST = 0xFFFF
         WM_SETTINGCHANGE = 0x001A
         SMTO_ABORTIFHUNG = 0x0002
         ctypes.windll.user32.SendMessageTimeoutW(
-            HWND_BROADCAST, WM_SETTINGCHANGE, 0, "Environment",
-            SMTO_ABORTIFHUNG, 5000, None,
+            HWND_BROADCAST,
+            WM_SETTINGCHANGE,
+            0,
+            "Environment",
+            SMTO_ABORTIFHUNG,
+            5000,
+            None,
         )
         logger.info("Windows user PATH updated and change broadcasted.")
         return True

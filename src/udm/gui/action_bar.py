@@ -1,7 +1,7 @@
 """Bottom action bar — Clear Selection + Install Selected buttons."""
 
-from PySide6.QtWidgets import QWidget, QHBoxLayout
 from PySide6.QtCore import Signal
+from PySide6.QtWidgets import QHBoxLayout, QWidget
 
 from udm.gui.theme import BG_WINDOW
 from udm.gui.widgets import ActionButton

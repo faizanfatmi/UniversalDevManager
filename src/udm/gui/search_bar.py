@@ -1,7 +1,7 @@
 """Search bar — search input + category dropdown + refresh button."""
 
-from PySide6.QtWidgets import QWidget, QHBoxLayout, QLineEdit, QComboBox
 from PySide6.QtCore import Signal
+from PySide6.QtWidgets import QComboBox, QHBoxLayout, QLineEdit, QWidget
 
 from udm.gui.theme import BG_WINDOW
 from udm.gui.widgets import ActionButton
@@ -30,7 +30,9 @@ class SearchBar(QWidget):
         self.category_combo = QComboBox()
         self.category_combo.addItems(["All"] + categories)
         self.category_combo.setMinimumWidth(120)
-        self.category_combo.currentTextChanged.connect(lambda _: self.filter_changed.emit())
+        self.category_combo.currentTextChanged.connect(
+            lambda _: self.filter_changed.emit()
+        )
         layout.addWidget(self.category_combo)
 
         refresh_btn = ActionButton("↻  REFRESH", "secondary")

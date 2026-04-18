@@ -1,13 +1,25 @@
 """Custom Qt widgets — PillBadge, AnimatedButton."""
 
-from PySide6.QtWidgets import QLabel, QPushButton
-from PySide6.QtCore import Qt, QPropertyAnimation, QEasingCurve, Property
+from PySide6.QtCore import Property, QEasingCurve, QPropertyAnimation, Qt
 from PySide6.QtGui import QColor
+from PySide6.QtWidgets import QLabel, QPushButton
 
 from udm.gui.theme import (
-    BADGE_BG, FG_DIM, GREEN, GREEN_DIM, GREEN_DARK,
-    RED, RED_DIM, AMBER, BADGE_GREEN_BG, BADGE_GREEN_FG,
-    BADGE_AMBER_BG, BADGE_AMBER_FG, BG_INPUT, FG, BORDER,
+    AMBER,
+    BADGE_AMBER_BG,
+    BADGE_AMBER_FG,
+    BADGE_BG,
+    BADGE_GREEN_BG,
+    BADGE_GREEN_FG,
+    BG_INPUT,
+    BORDER,
+    FG,
+    FG_DIM,
+    GREEN,
+    GREEN_DARK,
+    GREEN_DIM,
+    RED,
+    RED_DIM,
 )
 
 

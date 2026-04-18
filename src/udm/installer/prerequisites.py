@@ -1,7 +1,7 @@
 """Platform prerequisites — Homebrew and apt-get update."""
 
-from udm.platform import is_mac, is_linux, command_exists, run_command
 from udm.installer.callbacks import log
+from udm.platform import command_exists, is_linux, is_mac, run_command
 
 
 def ensure_homebrew():

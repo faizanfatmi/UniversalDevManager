@@ -1,11 +1,11 @@
 """Status bar — progress bar + system status label."""
 
-from PySide6.QtWidgets import QWidget, QHBoxLayout, QLabel, QProgressBar
 from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QHBoxLayout, QLabel, QProgressBar, QWidget
 
-from udm.gui.theme import BG_STATUS, FG_MUTED, BORDER
-from udm.gui.widgets import PillBadge
 from udm.constants import APP_VERSION
+from udm.gui.theme import BG_STATUS, BORDER, FG_MUTED
+from udm.gui.widgets import PillBadge
 
 
 class StatusBar(QWidget):

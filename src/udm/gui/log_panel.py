@@ -1,13 +1,28 @@
 """Collapsible system log panel."""
 
+from PySide6.QtCore import QEasingCurve, QPropertyAnimation, Qt
+from PySide6.QtGui import QColor, QTextCursor
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QLabel,
-    QTextEdit, QPushButton, QSizePolicy,
+    QHBoxLayout,
+    QLabel,
+    QPushButton,
+    QSizePolicy,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
 )
-from PySide6.QtCore import Qt, QPropertyAnimation, QEasingCurve
-from PySide6.QtGui import QTextCursor, QColor
 
-from udm.gui.theme import BG_LOG, BG_CARD, FG_DIM, FG_MUTED, GREEN, RED, AMBER, PURPLE, BORDER
+from udm.gui.theme import (
+    AMBER,
+    BG_CARD,
+    BG_LOG,
+    BORDER,
+    FG_DIM,
+    FG_MUTED,
+    GREEN,
+    PURPLE,
+    RED,
+)
 
 
 class LogPanel(QWidget):

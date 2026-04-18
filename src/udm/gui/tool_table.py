@@ -1,15 +1,29 @@
 """Scrollable tool list table with checkboxes, version, and category badges."""
 
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QLabel,
-    QCheckBox, QScrollArea, QFrame, QSizePolicy,
+    QCheckBox,
+    QFrame,
+    QHBoxLayout,
+    QLabel,
+    QScrollArea,
+    QSizePolicy,
+    QVBoxLayout,
+    QWidget,
 )
-from PySide6.QtCore import Signal, Qt
 
 from udm.gui.theme import (
-    BG_CARD, BG_ROW, BG_ROW_HOVER, BG_ROW_SELECTED,
-    FG, FG_DIM, FG_MUTED, GREEN, BORDER, COLUMN_HEADER_FG,
     BADGE_BG,
+    BG_CARD,
+    BG_ROW,
+    BG_ROW_HOVER,
+    BG_ROW_SELECTED,
+    BORDER,
+    COLUMN_HEADER_FG,
+    FG,
+    FG_DIM,
+    FG_MUTED,
+    GREEN,
 )
 from udm.gui.widgets import PillBadge
 
@@ -68,10 +82,16 @@ class ToolRow(QFrame):
         name_widget = QWidget()
         name_widget.setLayout(name_col)
         name_widget.setStyleSheet("background: transparent;")
-        name_widget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        name_widget.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred
+        )
         layout.addWidget(name_widget, stretch=1)
 
-        version = tool.get("detect_cmd", "").split("--version")[0].strip() if "--version" in tool.get("detect_cmd", "") else ""
+        version = (
+            tool.get("detect_cmd", "").split("--version")[0].strip()
+            if "--version" in tool.get("detect_cmd", "")
+            else ""
+        )
         version_text = "—"
         if version:
             version_text = version.split()[-1] if version.split() else "—"
@@ -154,7 +174,9 @@ class ColumnHeader(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setFixedHeight(40)
-        self.setStyleSheet(f"background-color: {BG_CARD}; border-bottom: 1px solid {BORDER};")
+        self.setStyleSheet(
+            f"background-color: {BG_CARD}; border-bottom: 1px solid {BORDER};"
+        )
 
         layout = QHBoxLayout(self)
         layout.setContentsMargins(20, 0, 20, 0)
@@ -163,7 +185,9 @@ class ColumnHeader(QWidget):
         self.select_all_cb = QCheckBox()
         self.select_all_cb.setFixedWidth(36)
         self.select_all_cb.stateChanged.connect(
-            lambda state: self.select_all_changed.emit(state == Qt.CheckState.Checked.value)
+            lambda state: self.select_all_changed.emit(
+                state == Qt.CheckState.Checked.value
+            )
         )
         layout.addWidget(self.select_all_cb)
 
@@ -207,7 +231,9 @@ class ToolTable(QWidget):
 
         self.scroll_area = QScrollArea()
         self.scroll_area.setWidgetResizable(True)
-        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.scroll_area.setHorizontalScrollBarPolicy(
+            Qt.ScrollBarPolicy.ScrollBarAlwaysOff
+        )
         self.scroll_area.setStyleSheet(f"""
             QScrollArea {{
                 border: none;

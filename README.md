@@ -6,18 +6,18 @@ A professional, cross-platform desktop application that lets developers **search
 
 ## ✨ Features
 
-| Feature | Details |
-|---|---|
-| **50+ Tools** | Languages, compilers, SDKs, frameworks, AI/ML, mobile & web dev |
-| **Instant Search** | Type to filter the tool list in real time |
+| Feature             | Details                                                            |
+| ------------------- | ------------------------------------------------------------------ |
+| **50+ Tools**       | Languages, compilers, SDKs, frameworks, AI/ML, mobile & web dev    |
+| **Instant Search**  | Type to filter the tool list in real time                          |
 | **Category Filter** | Dropdown to filter by Languages, Compilers, SDKs, Frameworks, etc. |
-| **Smart Install** | Install button stays disabled until ≥1 item is selected |
-| **Cross-Platform** | Windows (winget), Linux (apt), macOS (Homebrew) |
-| **Auto Detection** | Skips tools that are already installed |
-| **PATH Management** | Automatically configures environment variables |
-| **Live Progress** | Progress bar, status label, and colour-coded log console |
-| **Thread-Safe** | Installations run in background threads — GUI never freezes |
-| **Configurable** | All tools loaded dynamically from `tools.json` |
+| **Smart Install**   | Install button stays disabled until ≥1 item is selected            |
+| **Cross-Platform**  | Windows (winget), Linux (apt), macOS (Homebrew)                    |
+| **Auto Detection**  | Skips tools that are already installed                             |
+| **PATH Management** | Automatically configures environment variables                     |
+| **Live Progress**   | Progress bar, status label, and colour-coded log console           |
+| **Thread-Safe**     | Installations run in background threads — GUI never freezes        |
+| **Configurable**    | All tools loaded dynamically from `tools.json`                     |
 
 ---
 

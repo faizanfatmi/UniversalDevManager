@@ -1,6 +1,6 @@
 """Batch installation orchestrator."""
 
-from udm.installer.callbacks import notify, log
+from udm.installer.callbacks import log, notify
 from udm.installer.engine import detect_tool, install_tool, setup_path
 
 

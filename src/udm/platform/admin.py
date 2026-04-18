@@ -11,6 +11,7 @@ def is_admin() -> bool:
     if is_windows():
         try:
             import ctypes
+
             return ctypes.windll.shell32.IsUserAnAdmin() != 0
         except Exception:
             return False
@@ -22,6 +23,7 @@ def request_admin():
     """Relaunch the current script with admin / root privileges."""
     if is_windows():
         import ctypes
+
         ctypes.windll.shell32.ShellExecuteW(
             None, "runas", sys.executable, " ".join(sys.argv), None, 1
         )

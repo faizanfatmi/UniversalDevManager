@@ -1,11 +1,11 @@
 """Header bar — app title + OS badge + admin badge."""
 
-from PySide6.QtWidgets import QWidget, QHBoxLayout, QLabel
 from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QHBoxLayout, QLabel, QWidget
 
 from udm.gui.theme import BG_HEADER, FG_HEADER
 from udm.gui.widgets import PillBadge
-from udm.platform import os_label, is_admin
+from udm.platform import is_admin, os_label
 
 
 class HeaderBar(QWidget):
