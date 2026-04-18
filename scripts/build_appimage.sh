@@ -11,6 +11,8 @@ echo "=== Building Linux AppImage ==="
 
 # Step 1: PyInstaller one-directory build
 python3 -m PyInstaller \
+    --clean \
+    --noconfirm \
     --onedir \
     --name UniversalDevManager \
     --add-data "$ROOT/tools.json:." \
@@ -44,16 +46,17 @@ EOF
 
 cp "$APPDIR/usr/share/applications/UniversalDevManager.desktop" "$APPDIR/UniversalDevManager.desktop"
 
-# Create a simple icon (placeholder SVG converted to PNG would go here)
-# For now, create a minimal placeholder
-convert -size 256x256 xc:"#1a1d23" -fill "#4ade80" -gravity center \
-    -pointsize 120 -annotate 0 "U" \
-    "$APPDIR/usr/share/icons/hicolor/256x256/apps/UniversalDevManager.png" 2>/dev/null || \
-    echo "ImageMagick not available, skipping icon generation"
+# Create a simple SVG icon
+cat > "$APPDIR/UniversalDevManager.svg" << 'EOF'
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256">
+    <rect width="256" height="256" fill="#1a1d23" rx="32"/>
+    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="120" fill="#4ade80" font-weight="bold">U</text>
+</svg>
+EOF
 
-# Copy icon to AppDir root
-cp "$APPDIR/usr/share/icons/hicolor/256x256/apps/UniversalDevManager.png" \
-   "$APPDIR/UniversalDevManager.png" 2>/dev/null || true
+# Copy icon to hicolor directory
+mkdir -p "$APPDIR/usr/share/icons/hicolor/scalable/apps"
+cp "$APPDIR/UniversalDevManager.svg" "$APPDIR/usr/share/icons/hicolor/scalable/apps/"
 
 # AppRun
 cat > "$APPDIR/AppRun" << 'APPRUN'

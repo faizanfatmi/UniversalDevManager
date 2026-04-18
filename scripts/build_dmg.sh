@@ -10,6 +10,8 @@ echo "=== Building macOS .dmg ==="
 
 # Step 1: PyInstaller .app bundle
 python3 -m PyInstaller \
+    --clean \
+    --noconfirm \
     --onedir \
     --windowed \
     --name "Universal Dev Manager" \

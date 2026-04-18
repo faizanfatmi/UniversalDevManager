@@ -11,6 +11,8 @@ DIST = ROOT / "dist"
 def main():
     cmd = [
         sys.executable, "-m", "PyInstaller",
+        "--clean",
+        "--noconfirm",
         "--onefile",
         "--windowed",
         "--name", "UniversalDevManager",
