@@ -17,3 +17,19 @@ build/
 # OS
 Thumbs.db
 .DS_Store
+
+# Meson
+builddir/
+
+# uv
+.venv/
+
+# PyInstaller
+*.manifest
+*.spec
+
+# AppImage
+*.AppImage
+
+# macOS
+*.dmg
