@@ -1,10 +1,16 @@
-"""Main application window — assembles all GUI sections."""
+"""Main application window — assembles all GUI sections with sidebar layout."""
 
 import sys
 import threading
 
 from PySide6.QtCore import QObject, Qt, Signal, Slot
-from PySide6.QtWidgets import QMainWindow, QMessageBox, QVBoxLayout, QWidget
+from PySide6.QtWidgets import (
+    QHBoxLayout,
+    QMainWindow,
+    QMessageBox,
+    QVBoxLayout,
+    QWidget,
+)
 
 from udm.config import get_categories, load_tools
 from udm.constants import (
@@ -18,8 +24,9 @@ from udm.gui.action_bar import ActionBar
 from udm.gui.header import HeaderBar
 from udm.gui.log_panel import LogPanel
 from udm.gui.search_bar import SearchBar
+from udm.gui.sidebar import Sidebar
 from udm.gui.status_bar import StatusBar
-from udm.gui.theme import build_stylesheet
+from udm.gui.theme import BG_WINDOW, build_stylesheet
 from udm.gui.tool_table import ToolTable
 from udm.installer import install_selected, set_log_callback, set_progress_callback
 from udm.logger import logger
@@ -35,7 +42,7 @@ class WorkerSignals(QObject):
 
 
 class MainWindow(QMainWindow):
-    """Primary application window."""
+    """Primary application window with sidebar layout."""
 
     def __init__(self):
         super().__init__()
@@ -52,11 +59,20 @@ class MainWindow(QMainWindow):
 
         self._all_tools = load_tools()
         self._categories = get_categories(self._all_tools)
+        self._tool_counts = self._compute_tool_counts()
 
         self._build_ui()
         self._connect_signals()
         self._setup_callbacks()
         self._center_on_screen()
+
+    def _compute_tool_counts(self) -> dict[str, int]:
+        """Compute tool count per category."""
+        counts: dict[str, int] = {}
+        for tool in self._all_tools:
+            cat = tool.get("category", "Other")
+            counts[cat] = counts.get(cat, 0) + 1
+        return counts
 
     def _center_on_screen(self):
         screen = self.screen().availableGeometry()
@@ -66,33 +82,61 @@ class MainWindow(QMainWindow):
 
     def _build_ui(self):
         central = QWidget()
+        central.setStyleSheet(f"background-color: {BG_WINDOW};")
         self.setCentralWidget(central)
 
-        layout = QVBoxLayout(central)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(0)
+        root_layout = QVBoxLayout(central)
+        root_layout.setContentsMargins(0, 0, 0, 0)
+        root_layout.setSpacing(0)
 
+        # Header (full width)
         self.header = HeaderBar()
-        layout.addWidget(self.header)
+        root_layout.addWidget(self.header)
 
+        # Main content area: sidebar + content
+        content_area = QWidget()
+        content_layout = QHBoxLayout(content_area)
+        content_layout.setContentsMargins(0, 0, 0, 0)
+        content_layout.setSpacing(0)
+
+        # Sidebar
+        self.sidebar = Sidebar(self._categories, self._tool_counts)
+        content_layout.addWidget(self.sidebar)
+
+        # Right content panel
+        right_panel = QWidget()
+        right_panel.setStyleSheet(f"background-color: {BG_WINDOW};")
+        right_layout = QVBoxLayout(right_panel)
+        right_layout.setContentsMargins(0, 0, 0, 0)
+        right_layout.setSpacing(0)
+
+        # Search bar
         self.search_bar = SearchBar(self._categories)
-        layout.addWidget(self.search_bar)
+        right_layout.addWidget(self.search_bar)
 
+        # Tool table
         self.tool_table = ToolTable(self._all_tools)
-        layout.addWidget(self.tool_table, stretch=1)
+        right_layout.addWidget(self.tool_table, stretch=1)
 
+        # Log panel
         self.log_panel = LogPanel()
-        layout.addWidget(self.log_panel)
+        right_layout.addWidget(self.log_panel)
 
-        self.status_bar = StatusBar()
-        layout.addWidget(self.status_bar)
-
+        # Action bar
         self.action_bar = ActionBar()
-        layout.addWidget(self.action_bar)
+        right_layout.addWidget(self.action_bar)
+
+        content_layout.addWidget(right_panel, stretch=1)
+        root_layout.addWidget(content_area, stretch=1)
+
+        # Status bar (full width)
+        self.status_bar = StatusBar()
+        root_layout.addWidget(self.status_bar)
 
     def _connect_signals(self):
         self.search_bar.filter_changed.connect(self._apply_filter)
         self.search_bar.refresh_requested.connect(self._on_refresh)
+        self.sidebar.category_selected.connect(self._on_category_selected)
         self.tool_table.selection_changed.connect(self._on_selection_changed)
         self.action_bar.clear_clicked.connect(self._on_clear)
         self.action_bar.install_clicked.connect(self._on_install)
@@ -102,6 +146,10 @@ class MainWindow(QMainWindow):
             lambda tool, status, pct: self._signals.progress.emit(tool, status, pct)
         )
         set_log_callback(lambda msg: self._signals.log_message.emit(msg))
+
+    def _on_category_selected(self, category: str):
+        """Handle sidebar category selection."""
+        self.search_bar.set_category(category)
 
     def _apply_filter(self):
         query = self.search_bar.search_text()
@@ -117,6 +165,7 @@ class MainWindow(QMainWindow):
     def _on_refresh(self):
         self._all_tools = load_tools()
         self._categories = get_categories(self._all_tools)
+        self._tool_counts = self._compute_tool_counts()
         self.search_bar.set_categories(self._categories)
         self.tool_table.rebuild(self._all_tools)
         self._apply_filter()

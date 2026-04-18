@@ -1,7 +1,7 @@
 [project]
-name = "universal-dev-manager"
-version = "2.0.0"
-description = "Cross-platform developer tool installer with Qt GUI"
+name = "devinstaller"
+version = "3.0.0"
+description = "DevInstaller — cross-platform developer tool installer with premium Qt GUI"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 dependencies = [
@@ -9,7 +9,7 @@ dependencies = [
 ]
 
 [project.scripts]
-udm = "udm.app:main"
+devinstaller = "udm.app:main"
 
 [build-system]
 requires = ["hatchling"]

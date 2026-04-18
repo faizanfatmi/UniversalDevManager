@@ -1,62 +1,85 @@
-"""Dark console theme — color palette and global QSS stylesheet."""
+"""DevInstaller premium dark theme — color palette and global QSS stylesheet."""
 
-# Background hierarchy
-BG_WINDOW = "#1a1d23"
-BG_HEADER = "#22252d"
-BG_CARD = "#252830"
-BG_INPUT = "#2a2d36"
-BG_ROW = "#252830"
-BG_ROW_HOVER = "#2e323c"
-BG_ROW_SELECTED = "#2a3040"
-BG_LOG = "#1e2028"
-BG_STATUS = "#1e2028"
+# ─── Background hierarchy ────────────────────────────────────────────
+BG_WINDOW = "#0f1117"
+BG_SIDEBAR = "#161921"
+BG_HEADER = "#161921"
+BG_CARD = "#1a1e28"
+BG_INPUT = "#1e2230"
+BG_ROW = "#1a1e28"
+BG_ROW_HOVER = "#222738"
+BG_ROW_SELECTED = "#1c2444"
+BG_LOG = "#12151c"
+BG_STATUS = "#12151c"
 
-# Foreground
-FG = "#e0e2e8"
-FG_DIM = "#8b8f9a"
-FG_MUTED = "#5c5f6a"
-FG_HEADER = "#f0f1f4"
+# ─── Foreground ──────────────────────────────────────────────────────
+FG = "#e4e6ef"
+FG_DIM = "#8890a4"
+FG_MUTED = "#505770"
+FG_HEADER = "#f5f6fa"
 
-# Accents
-GREEN = "#4ade80"
-GREEN_DIM = "#1a3a2a"
-GREEN_DARK = "#16a34a"
-RED = "#f87171"
-RED_DIM = "#3f1a1a"
-AMBER = "#fbbf24"
-CYAN = "#22d3ee"
-PURPLE = "#a78bfa"
+# ─── Gradient accent (primary blue-purple) ───────────────────────────
+ACCENT_PRIMARY = "#6c5ce7"
+ACCENT_SECONDARY = "#0984e3"
+ACCENT_GRADIENT_START = "#6c5ce7"
+ACCENT_GRADIENT_END = "#00b4d8"
+ACCENT_GLOW = "rgba(108, 92, 231, 0.25)"
 
-# Borders
-BORDER = "#32363f"
-BORDER_LIGHT = "#3a3f4a"
+# ─── Status colors ─────────────────────────────────────────────────
+GREEN = "#00e676"
+GREEN_DIM = "#0d2e1a"
+GREEN_DARK = "#00c853"
+RED = "#ff5252"
+RED_DIM = "#2e0d0d"
+AMBER = "#ffab40"
+CYAN = "#18ffff"
+PURPLE = "#b388ff"
 
-# Badges
-BADGE_BG = "#32363f"
-BADGE_GREEN_BG = "#1a3a2a"
-BADGE_GREEN_FG = "#4ade80"
-BADGE_AMBER_BG = "#3a3020"
-BADGE_AMBER_FG = "#fbbf24"
+# ─── Borders ────────────────────────────────────────────────────────
+BORDER = "#252a3a"
+BORDER_LIGHT = "#2e3548"
+BORDER_ACCENT = "rgba(108, 92, 231, 0.35)"
 
-# Progress
-PROGRESS_BG = "#2a2d36"
-PROGRESS_FG = "#4ade80"
+# ─── Badges ─────────────────────────────────────────────────────────
+BADGE_BG = "#252a3a"
+BADGE_GREEN_BG = "#0d2e1a"
+BADGE_GREEN_FG = "#00e676"
+BADGE_AMBER_BG = "#2e2a0d"
+BADGE_AMBER_FG = "#ffab40"
+BADGE_ACCENT_BG = "rgba(108, 92, 231, 0.15)"
+BADGE_ACCENT_FG = "#b388ff"
 
-# Scrollbar
-SCROLLBAR_BG = "#252830"
-SCROLLBAR_FG = "#3a3f4a"
+# ─── Progress ───────────────────────────────────────────────────────
+PROGRESS_BG = "#1e2230"
+PROGRESS_FG = "#6c5ce7"
 
-# Column header
-COLUMN_HEADER_FG = "#6b7080"
+# ─── Scrollbar ──────────────────────────────────────────────────────
+SCROLLBAR_BG = "transparent"
+SCROLLBAR_FG = "#2e3548"
+
+# ─── Column header ──────────────────────────────────────────────────
+COLUMN_HEADER_FG = "#505770"
+
+# ─── Sidebar ────────────────────────────────────────────────────────
+SIDEBAR_ITEM_HOVER = "#1e2230"
+SIDEBAR_ITEM_ACTIVE = "rgba(108, 92, 231, 0.12)"
+SIDEBAR_ICON_COLOR = "#505770"
+SIDEBAR_ICON_ACTIVE = "#6c5ce7"
 
 
 def build_stylesheet() -> str:
     """Return the global QSS stylesheet for the application."""
     return f"""
-        QMainWindow, QWidget {{
+        * {{
+            font-family: "Segoe UI", "SF Pro Display", "Inter", "Helvetica Neue", sans-serif;
+        }}
+        QMainWindow {{
             background-color: {BG_WINDOW};
             color: {FG};
-            font-family: "Segoe UI", "SF Pro Display", "Helvetica Neue", sans-serif;
+            font-size: 13px;
+        }}
+        QWidget {{
+            color: {FG};
             font-size: 13px;
         }}
 
@@ -64,23 +87,27 @@ def build_stylesheet() -> str:
             background-color: {BG_INPUT};
             color: {FG};
             border: 1px solid {BORDER};
-            border-radius: 6px;
-            padding: 10px 14px;
+            border-radius: 10px;
+            padding: 11px 16px;
             font-size: 14px;
-            selection-background-color: {GREEN_DARK};
+            selection-background-color: {ACCENT_PRIMARY};
         }}
         QLineEdit:focus {{
-            border-color: {GREEN};
+            border-color: {ACCENT_PRIMARY};
+            background-color: #1a1f30;
         }}
 
         QComboBox {{
             background-color: {BG_INPUT};
             color: {FG};
             border: 1px solid {BORDER};
-            border-radius: 6px;
-            padding: 8px 12px;
+            border-radius: 10px;
+            padding: 9px 14px;
             font-size: 13px;
             min-width: 80px;
+        }}
+        QComboBox:hover {{
+            border-color: {BORDER_LIGHT};
         }}
         QComboBox::drop-down {{
             border: none;
@@ -91,27 +118,29 @@ def build_stylesheet() -> str:
             border-left: 5px solid transparent;
             border-right: 5px solid transparent;
             border-top: 6px solid {FG_DIM};
-            margin-right: 8px;
+            margin-right: 10px;
         }}
         QComboBox QAbstractItemView {{
             background-color: {BG_CARD};
             color: {FG};
             border: 1px solid {BORDER};
-            selection-background-color: {GREEN_DIM};
-            selection-color: {GREEN};
+            selection-background-color: {SIDEBAR_ITEM_ACTIVE};
+            selection-color: {ACCENT_PRIMARY};
             outline: none;
+            border-radius: 8px;
         }}
 
         QScrollBar:vertical {{
             background: {SCROLLBAR_BG};
-            width: 10px;
+            width: 8px;
             border: none;
-            border-radius: 5px;
+            border-radius: 4px;
+            margin: 4px 2px;
         }}
         QScrollBar::handle:vertical {{
             background: {SCROLLBAR_FG};
-            border-radius: 5px;
-            min-height: 30px;
+            border-radius: 4px;
+            min-height: 40px;
         }}
         QScrollBar::handle:vertical:hover {{
             background: {FG_MUTED};
@@ -126,33 +155,34 @@ def build_stylesheet() -> str:
         QProgressBar {{
             background-color: {PROGRESS_BG};
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             text-align: center;
             color: transparent;
-            max-height: 8px;
+            max-height: 6px;
         }}
         QProgressBar::chunk {{
-            background-color: {PROGRESS_FG};
-            border-radius: 4px;
+            background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                stop:0 {ACCENT_GRADIENT_START}, stop:1 {ACCENT_GRADIENT_END});
+            border-radius: 5px;
         }}
 
         QCheckBox {{
             spacing: 8px;
         }}
         QCheckBox::indicator {{
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             border: 2px solid {BORDER_LIGHT};
-            border-radius: 4px;
+            border-radius: 6px;
             background-color: transparent;
         }}
         QCheckBox::indicator:checked {{
-            background-color: {GREEN};
-            border-color: {GREEN};
+            background-color: {ACCENT_PRIMARY};
+            border-color: {ACCENT_PRIMARY};
             image: none;
         }}
         QCheckBox::indicator:hover {{
-            border-color: {GREEN};
+            border-color: {ACCENT_PRIMARY};
         }}
 
         QTextEdit {{
@@ -161,8 +191,8 @@ def build_stylesheet() -> str:
             border: none;
             font-family: "JetBrains Mono", "Cascadia Code", "Consolas", monospace;
             font-size: 12px;
-            padding: 12px;
-            selection-background-color: {GREEN_DIM};
+            padding: 14px;
+            selection-background-color: rgba(108, 92, 231, 0.3);
         }}
 
         QMessageBox {{
@@ -175,11 +205,21 @@ def build_stylesheet() -> str:
             background-color: {BG_INPUT};
             color: {FG};
             border: 1px solid {BORDER};
-            border-radius: 4px;
-            padding: 6px 20px;
+            border-radius: 8px;
+            padding: 8px 24px;
             min-width: 80px;
         }}
         QMessageBox QPushButton:hover {{
             background-color: {BG_ROW_HOVER};
+            border-color: {ACCENT_PRIMARY};
+        }}
+
+        QToolTip {{
+            background-color: {BG_CARD};
+            color: {FG};
+            border: 1px solid {BORDER};
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 12px;
         }}
     """

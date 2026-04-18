@@ -1,19 +1,28 @@
-"""Status bar — progress bar + system status label."""
+"""Status bar — gradient progress bar + system status label."""
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QHBoxLayout, QLabel, QProgressBar, QWidget
 
 from udm.constants import APP_VERSION
-from udm.gui.theme import BG_STATUS, BORDER, FG_MUTED
+from udm.gui.theme import (
+    ACCENT_GRADIENT_END,
+    ACCENT_GRADIENT_START,
+    ACCENT_PRIMARY,
+    BG_STATUS,
+    BORDER,
+    FG_DIM,
+    FG_MUTED,
+    PROGRESS_BG,
+)
 from udm.gui.widgets import PillBadge
 
 
 class StatusBar(QWidget):
-    """Bottom status bar with progress indicator."""
+    """Bottom status bar with gradient progress indicator."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setFixedHeight(36)
+        self.setFixedHeight(38)
         self.setStyleSheet(f"""
             background-color: {BG_STATUS};
             border-top: 1px solid {BORDER};
@@ -23,7 +32,7 @@ class StatusBar(QWidget):
         layout.setContentsMargins(28, 0, 28, 0)
         layout.setSpacing(12)
 
-        self.status_label = QLabel("SYSTEM OUTPUT LOG")
+        self.status_label = QLabel("Ready")
         self.status_label.setStyleSheet(f"""
             color: {FG_MUTED};
             font-size: 11px;
@@ -37,12 +46,25 @@ class StatusBar(QWidget):
         self.progress_bar.setRange(0, 100)
         self.progress_bar.setValue(0)
         self.progress_bar.setTextVisible(False)
-        self.progress_bar.setFixedHeight(8)
+        self.progress_bar.setFixedHeight(6)
+        self.progress_bar.setStyleSheet(f"""
+            QProgressBar {{
+                background-color: {PROGRESS_BG};
+                border: none;
+                border-radius: 3px;
+                max-height: 6px;
+            }}
+            QProgressBar::chunk {{
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                    stop:0 {ACCENT_GRADIENT_START}, stop:1 {ACCENT_GRADIENT_END});
+                border-radius: 3px;
+            }}
+        """)
         layout.addWidget(self.progress_bar, stretch=1)
 
         layout.addSpacing(16)
 
-        version_badge = PillBadge(f"V{APP_VERSION}-STABLE", "default")
+        version_badge = PillBadge(f"v{APP_VERSION}", "accent")
         layout.addWidget(version_badge)
 
     def set_progress(self, value: int):

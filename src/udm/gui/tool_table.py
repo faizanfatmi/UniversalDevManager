@@ -1,9 +1,10 @@
-"""Scrollable tool list table with checkboxes, version, and category badges."""
+"""Scrollable tool list with premium card-style rows."""
 
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import (
     QCheckBox,
     QFrame,
+    QGraphicsDropShadowEffect,
     QHBoxLayout,
     QLabel,
     QScrollArea,
@@ -11,14 +12,20 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+from PySide6.QtGui import QColor
 
 from udm.gui.theme import (
+    ACCENT_GLOW,
+    ACCENT_PRIMARY,
     BADGE_BG,
     BG_CARD,
+    BG_INPUT,
     BG_ROW,
     BG_ROW_HOVER,
     BG_ROW_SELECTED,
+    BG_WINDOW,
     BORDER,
+    BORDER_ACCENT,
     COLUMN_HEADER_FG,
     FG,
     FG_DIM,
@@ -27,9 +34,31 @@ from udm.gui.theme import (
 )
 from udm.gui.widgets import PillBadge
 
+# Category color mapping for visual variety
+CATEGORY_COLORS = {
+    "Languages": ("#6c5ce7", "rgba(108, 92, 231, 0.12)"),
+    "Compilers": ("#00b894", "rgba(0, 184, 148, 0.12)"),
+    "SDKs": ("#0984e3", "rgba(9, 132, 227, 0.12)"),
+    "Frameworks": ("#e17055", "rgba(225, 112, 85, 0.12)"),
+    "Databases": ("#00cec9", "rgba(0, 206, 201, 0.12)"),
+    "DevOps": ("#fdcb6e", "rgba(253, 203, 110, 0.12)"),
+    "Package Managers": ("#a29bfe", "rgba(162, 155, 254, 0.12)"),
+    "IDEs": ("#fd79a8", "rgba(253, 121, 168, 0.12)"),
+    "Editors": ("#55efc4", "rgba(85, 239, 196, 0.12)"),
+    "Version Control": ("#fab1a0", "rgba(250, 177, 160, 0.12)"),
+    "Cloud": ("#74b9ff", "rgba(116, 185, 255, 0.12)"),
+    "Mobile": ("#ff7675", "rgba(255, 118, 117, 0.12)"),
+    "Web Dev": ("#00b4d8", "rgba(0, 180, 216, 0.12)"),
+    "AI/ML": ("#b388ff", "rgba(179, 136, 255, 0.12)"),
+    "Testing": ("#81ecec", "rgba(129, 236, 236, 0.12)"),
+    "Build Tools": ("#ffeaa7", "rgba(255, 234, 167, 0.12)"),
+    "Containers": ("#0984e3", "rgba(9, 132, 227, 0.12)"),
+    "Terminal": ("#00e676", "rgba(0, 230, 118, 0.12)"),
+}
+
 
 class ToolRow(QFrame):
-    """Single tool row with checkbox, name, description, version, category."""
+    """Single tool row — card style with checkbox, name, desc, version, category."""
 
     toggled = Signal(str, bool)
 
@@ -44,34 +73,40 @@ class ToolRow(QFrame):
                 background-color: {BG_ROW};
                 border: none;
                 border-bottom: 1px solid {BORDER};
+                margin: 0px;
             }}
         """)
-        self.setFixedHeight(64)
+        self.setFixedHeight(68)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
 
         layout = QHBoxLayout(self)
         layout.setContentsMargins(20, 0, 20, 0)
         layout.setSpacing(0)
 
+        # Checkbox
         self.checkbox = QCheckBox()
         self.checkbox.setFixedWidth(36)
         self.checkbox.stateChanged.connect(self._on_check)
         layout.addWidget(self.checkbox)
 
+        # Name + description column
         name_col = QVBoxLayout()
-        name_col.setSpacing(2)
-        name_col.setContentsMargins(0, 8, 0, 8)
+        name_col.setSpacing(3)
+        name_col.setContentsMargins(0, 10, 0, 10)
 
         self.name_label = QLabel(tool.get("name", ""))
         self.name_label.setStyleSheet(f"""
             color: {FG};
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
             background: transparent;
         """)
         name_col.addWidget(self.name_label)
 
-        self.desc_label = QLabel(tool.get("description", ""))
+        desc_text = tool.get("description", "")
+        if len(desc_text) > 80:
+            desc_text = desc_text[:77] + "..."
+        self.desc_label = QLabel(desc_text)
         self.desc_label.setStyleSheet(f"""
             color: {FG_MUTED};
             font-size: 11px;
@@ -87,6 +122,7 @@ class ToolRow(QFrame):
         )
         layout.addWidget(name_widget, stretch=1)
 
+        # Version badge
         version = (
             tool.get("detect_cmd", "").split("--version")[0].strip()
             if "--version" in tool.get("detect_cmd", "")
@@ -97,21 +133,36 @@ class ToolRow(QFrame):
             version_text = version.split()[-1] if version.split() else "—"
 
         self.version_label = QLabel(version_text)
-        self.version_label.setFixedWidth(120)
+        self.version_label.setFixedWidth(100)
         self.version_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.version_label.setStyleSheet(f"""
-            color: {GREEN};
-            font-family: "JetBrains Mono", "Consolas", monospace;
+            color: {FG_DIM};
+            font-family: "JetBrains Mono", "Cascadia Code", "Consolas", monospace;
             font-size: 12px;
             background: transparent;
         """)
         layout.addWidget(self.version_label)
 
-        layout.addSpacing(16)
+        layout.addSpacing(12)
 
-        cat_text = tool.get("category", "Other").upper()
-        self.cat_badge = PillBadge(cat_text, "default")
-        self.cat_badge.setFixedWidth(120)
+        # Category badge with per-category color
+        cat = tool.get("category", "Other")
+        cat_fg, cat_bg = CATEGORY_COLORS.get(cat, (FG_DIM, BADGE_BG))
+        cat_text = cat.upper()
+        self.cat_badge = QLabel(cat_text)
+        self.cat_badge.setFixedWidth(130)
+        self.cat_badge.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.cat_badge.setStyleSheet(f"""
+            QLabel {{
+                background-color: {cat_bg};
+                color: {cat_fg};
+                border-radius: 6px;
+                padding: 4px 10px;
+                font-size: 10px;
+                font-weight: 700;
+                letter-spacing: 0.6px;
+            }}
+        """)
         layout.addWidget(self.cat_badge)
 
     def _on_check(self, state):
@@ -120,14 +171,23 @@ class ToolRow(QFrame):
         self.toggled.emit(self.key, self._selected)
 
     def _update_visual(self):
-        bg = BG_ROW_SELECTED if self._selected else BG_ROW
-        self.setStyleSheet(f"""
-            ToolRow {{
-                background-color: {bg};
-                border: none;
-                border-bottom: 1px solid {BORDER};
-            }}
-        """)
+        if self._selected:
+            self.setStyleSheet(f"""
+                ToolRow {{
+                    background-color: {BG_ROW_SELECTED};
+                    border: none;
+                    border-bottom: 1px solid {BORDER_ACCENT};
+                    border-left: 3px solid {ACCENT_PRIMARY};
+                }}
+            """)
+        else:
+            self.setStyleSheet(f"""
+                ToolRow {{
+                    background-color: {BG_ROW};
+                    border: none;
+                    border-bottom: 1px solid {BORDER};
+                }}
+            """)
 
     def is_checked(self) -> bool:
         return self.checkbox.isChecked()
@@ -173,10 +233,13 @@ class ColumnHeader(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setFixedHeight(40)
-        self.setStyleSheet(
-            f"background-color: {BG_CARD}; border-bottom: 1px solid {BORDER};"
-        )
+        self.setFixedHeight(42)
+        self.setStyleSheet(f"""
+            background-color: {BG_CARD};
+            border-bottom: 1px solid {BORDER};
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        """)
 
         layout = QHBoxLayout(self)
         layout.setContentsMargins(20, 0, 20, 0)
@@ -191,22 +254,28 @@ class ColumnHeader(QWidget):
         )
         layout.addWidget(self.select_all_cb)
 
-        header_style = f"color: {COLUMN_HEADER_FG}; font-size: 11px; font-weight: 700; letter-spacing: 0.8px; background: transparent;"
+        header_style = f"""
+            color: {COLUMN_HEADER_FG};
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: transparent;
+        """
 
-        name_header = QLabel("PACKAGE NAME & DESCRIPTION")
+        name_header = QLabel("PACKAGE")
         name_header.setStyleSheet(header_style)
         layout.addWidget(name_header, stretch=1)
 
         version_header = QLabel("VERSION")
-        version_header.setFixedWidth(120)
+        version_header.setFixedWidth(100)
         version_header.setAlignment(Qt.AlignmentFlag.AlignCenter)
         version_header.setStyleSheet(header_style)
         layout.addWidget(version_header)
 
-        layout.addSpacing(16)
+        layout.addSpacing(12)
 
         cat_header = QLabel("CATEGORY")
-        cat_header.setFixedWidth(120)
+        cat_header.setFixedWidth(130)
         cat_header.setAlignment(Qt.AlignmentFlag.AlignCenter)
         cat_header.setStyleSheet(header_style)
         layout.addWidget(cat_header)
@@ -222,7 +291,7 @@ class ToolTable(QWidget):
         self._rows: list[ToolRow] = []
 
         outer_layout = QVBoxLayout(self)
-        outer_layout.setContentsMargins(28, 0, 28, 0)
+        outer_layout.setContentsMargins(24, 8, 24, 0)
         outer_layout.setSpacing(0)
 
         self.column_header = ColumnHeader()
@@ -238,10 +307,13 @@ class ToolTable(QWidget):
             QScrollArea {{
                 border: none;
                 background-color: {BG_CARD};
+                border-bottom-left-radius: 12px;
+                border-bottom-right-radius: 12px;
             }}
         """)
 
         self.list_widget = QWidget()
+        self.list_widget.setStyleSheet(f"background-color: {BG_CARD};")
         self.list_layout = QVBoxLayout(self.list_widget)
         self.list_layout.setContentsMargins(0, 0, 0, 0)
         self.list_layout.setSpacing(0)

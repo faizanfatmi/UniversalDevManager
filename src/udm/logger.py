@@ -11,12 +11,16 @@ def _log_file_path() -> Path:
     return Path(__file__).resolve().parent.parent.parent / "installer.log"
 
 
+import io
+
+_stream = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
     handlers=[
         logging.FileHandler(_log_file_path(), encoding="utf-8"),
-        logging.StreamHandler(sys.stdout),
+        logging.StreamHandler(_stream),
     ],
 )
 

@@ -1,9 +1,9 @@
 """Bottom action bar — Clear Selection + Install Selected buttons."""
 
 from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QHBoxLayout, QWidget
+from PySide6.QtWidgets import QHBoxLayout, QLabel, QWidget
 
-from udm.gui.theme import BG_WINDOW
+from udm.gui.theme import BG_WINDOW, FG_MUTED
 from udm.gui.widgets import ActionButton
 
 
@@ -16,18 +16,30 @@ class ActionBar(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setStyleSheet(f"background-color: {BG_WINDOW};")
-        self.setFixedHeight(64)
+        self.setFixedHeight(72)
 
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(28, 8, 28, 12)
+        layout.setContentsMargins(24, 10, 24, 14)
 
-        self.clear_btn = ActionButton("🗑  CLEAR SELECTION", "danger")
-        self.clear_btn.clicked.connect(self.clear_clicked.emit)
-        layout.addWidget(self.clear_btn)
+        # Selection count label
+        self.count_label = QLabel("No packages selected")
+        self.count_label.setStyleSheet(f"""
+            color: {FG_MUTED};
+            font-size: 12px;
+            font-weight: 500;
+            background: transparent;
+        """)
+        layout.addWidget(self.count_label)
 
         layout.addStretch()
 
-        self.install_btn = ActionButton("⬇  INSTALL SELECTED", "primary")
+        self.clear_btn = ActionButton("✕  Clear", "danger")
+        self.clear_btn.clicked.connect(self.clear_clicked.emit)
+        layout.addWidget(self.clear_btn)
+
+        layout.addSpacing(12)
+
+        self.install_btn = ActionButton("⬇  Install Selected", "primary")
         self.install_btn.setEnabled(False)
         self.install_btn.clicked.connect(self.install_clicked.emit)
         layout.addWidget(self.install_btn)
@@ -35,6 +47,8 @@ class ActionBar(QWidget):
     def update_state(self, selected_count: int):
         self.install_btn.setEnabled(selected_count > 0)
         if selected_count > 0:
-            self.install_btn.setText(f"⬇  INSTALL SELECTED ({selected_count})")
+            self.install_btn.setText(f"⬇  Install ({selected_count})")
+            self.count_label.setText(f"{selected_count} package{'s' if selected_count != 1 else ''} selected")
         else:
-            self.install_btn.setText("⬇  INSTALL SELECTED")
+            self.install_btn.setText("⬇  Install Selected")
+            self.count_label.setText("No packages selected")

@@ -1,6 +1,6 @@
-# Universal Dev Manager
+# DevInstaller
 
-A professional, cross-platform desktop application that lets developers **search, select, and install** programming languages, compilers, SDKs, and developer tools from a comprehensive catalog — all from a single, beautiful Qt-based GUI.
+A professional, cross-platform desktop application that lets developers **search, select, and install** programming languages, compilers, SDKs, and developer tools from a comprehensive catalog — all from a single, premium Qt-based GUI.
 
 ---
 
@@ -10,12 +10,12 @@ A professional, cross-platform desktop application that lets developers **search
 | ------------------- | ------------------------------------------------------------------ |
 | **50+ Tools**       | Languages, compilers, SDKs, frameworks, AI/ML, mobile & web dev    |
 | **Instant Search**  | Type to filter the tool list in real time                          |
-| **Category Filter** | Dropdown to filter by Languages, Compilers, SDKs, Frameworks, etc. |
+| **Sidebar Nav**     | Browse tools by category with icon navigation                      |
 | **Smart Install**   | Install button stays disabled until ≥1 item is selected            |
 | **Cross-Platform**  | Windows (winget), Linux (apt), macOS (Homebrew)                    |
 | **Auto Detection**  | Skips tools that are already installed                             |
 | **PATH Management** | Automatically configures environment variables                     |
-| **Live Progress**   | Progress bar, status label, and colour-coded log console           |
+| **Live Progress**   | Gradient progress bar, status label, and colour-coded terminal log  |
 | **Thread-Safe**     | Installations run in background threads — GUI never freezes        |
 | **Configurable**    | All tools loaded dynamically from `tools.json`                     |
 

@@ -7,7 +7,7 @@ from udm.platform import is_admin, is_windows, request_admin
 
 
 def main():
-    logger.info("═══ Universal Dev Console started ═══")
+    logger.info("═══ DevInstaller started ═══")
 
     if is_windows() and not is_admin():
         if "--elevate" in sys.argv:

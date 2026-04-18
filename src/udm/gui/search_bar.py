@@ -1,41 +1,58 @@
-"""Search bar — search input + category dropdown + refresh button."""
+"""Search bar — floating search input with tool count badge."""
 
 from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QComboBox, QHBoxLayout, QLineEdit, QWidget
+from PySide6.QtWidgets import QHBoxLayout, QLabel, QLineEdit, QWidget
 
-from udm.gui.theme import BG_WINDOW
+from udm.gui.theme import (
+    ACCENT_PRIMARY,
+    BG_CARD,
+    BG_INPUT,
+    BORDER,
+    FG,
+    FG_DIM,
+    FG_MUTED,
+)
 from udm.gui.widgets import ActionButton
 
 
 class SearchBar(QWidget):
-    """Search input, category filter, and refresh button."""
+    """Search input and refresh button (category moved to sidebar)."""
 
     filter_changed = Signal()
     refresh_requested = Signal()
 
     def __init__(self, categories: list[str], parent=None):
         super().__init__(parent)
-        self.setStyleSheet(f"background-color: {BG_WINDOW};")
+        self.setStyleSheet("background: transparent;")
 
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(28, 16, 28, 8)
+        layout.setContentsMargins(24, 16, 24, 8)
         layout.setSpacing(12)
 
+        # Search input with custom styling
         self.search_input = QLineEdit()
-        self.search_input.setPlaceholderText("🔍  Search registry…")
+        self.search_input.setPlaceholderText("🔍  Search packages...")
         self.search_input.setClearButtonEnabled(True)
         self.search_input.textChanged.connect(lambda _: self.filter_changed.emit())
+        self.search_input.setStyleSheet(f"""
+            QLineEdit {{
+                background-color: {BG_INPUT};
+                color: {FG};
+                border: 1px solid {BORDER};
+                border-radius: 12px;
+                padding: 12px 18px;
+                font-size: 14px;
+                selection-background-color: {ACCENT_PRIMARY};
+            }}
+            QLineEdit:focus {{
+                border-color: {ACCENT_PRIMARY};
+                background-color: #1a1f30;
+            }}
+        """)
         layout.addWidget(self.search_input, stretch=1)
 
-        self.category_combo = QComboBox()
-        self.category_combo.addItems(["All"] + categories)
-        self.category_combo.setMinimumWidth(120)
-        self.category_combo.currentTextChanged.connect(
-            lambda _: self.filter_changed.emit()
-        )
-        layout.addWidget(self.category_combo)
-
-        refresh_btn = ActionButton("↻  REFRESH", "secondary")
+        # Refresh button
+        refresh_btn = ActionButton("↻  Refresh", "secondary")
         refresh_btn.clicked.connect(self.refresh_requested.emit)
         layout.addWidget(refresh_btn)
 
@@ -43,14 +60,14 @@ class SearchBar(QWidget):
         return self.search_input.text().strip().lower()
 
     def selected_category(self) -> str:
-        return self.category_combo.currentText()
+        """Category now comes from sidebar; this returns 'All' for compat."""
+        return getattr(self, "_current_category", "All")
+
+    def set_category(self, category: str):
+        """Set current category from sidebar."""
+        self._current_category = category
+        self.filter_changed.emit()
 
     def set_categories(self, categories: list[str]):
-        current = self.category_combo.currentText()
-        self.category_combo.blockSignals(True)
-        self.category_combo.clear()
-        self.category_combo.addItems(["All"] + categories)
-        idx = self.category_combo.findText(current)
-        if idx >= 0:
-            self.category_combo.setCurrentIndex(idx)
-        self.category_combo.blockSignals(False)
+        """Compatibility method — categories are now in sidebar."""
+        pass
