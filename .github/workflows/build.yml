@@ -26,7 +26,7 @@ jobs:
       - name: Build Windows executable
         run: uv run python scripts/build_exe.py
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: windows-exe
           path: dist/*.exe
@@ -55,7 +55,7 @@ jobs:
       - name: Build AppImage
         run: uv run bash scripts/build_appimage.sh
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: linux-appimage
           path: dist/*.AppImage
@@ -76,7 +76,7 @@ jobs:
       - name: Build DMG
         run: uv run bash scripts/build_dmg.sh
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: macos-dmg
           path: dist/*.dmg
