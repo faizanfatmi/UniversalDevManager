@@ -8,6 +8,9 @@ BUILD="$ROOT/build/dmg"
 
 echo "=== Building macOS .dmg ==="
 
+echo "Syncing versions from meson.build..."
+python3 "$ROOT/scripts/sync_version.py"
+
 # Step 1: PyInstaller .app bundle
 python3 -m PyInstaller \
     --clean \

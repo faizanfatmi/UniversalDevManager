@@ -9,6 +9,9 @@ DIST = ROOT / "dist"
 
 
 def main():
+    print("Syncing versions from meson.build...")
+    subprocess.run([sys.executable, str(ROOT / "scripts" / "sync_version.py")], check=True)
+
     cmd = [
         sys.executable,
         "-m",

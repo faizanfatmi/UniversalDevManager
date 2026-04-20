@@ -9,6 +9,9 @@ APPDIR="$BUILD/UniversalDevManager.AppDir"
 
 echo "=== Building Linux AppImage ==="
 
+echo "Syncing versions from meson.build..."
+python3 "$ROOT/scripts/sync_version.py"
+
 # Step 1: PyInstaller one-directory build
 python3 -m PyInstaller \
     --clean \
