@@ -50,10 +50,10 @@
     "description": "GNU C compiler",
     "category": "Compilers",
     "detect_cmd": "gcc --version",
-    "install_command_windows": "winget install --id MSYS2.MSYS2 -e --silent --accept-source-agreements --accept-package-agreements",
+    "install_command_windows": "winget install --id BrechtSanders.WinLibs.POSIX.UCRT -e --silent --accept-source-agreements --accept-package-agreements",
     "install_command_linux": "sudo apt-get install -y gcc",
     "install_command_mac": "brew install gcc",
-    "path_dirs_windows": ["C:\\msys64\\mingw64\\bin", "C:\\msys64\\usr\\bin"],
+    "path_dirs_windows": ["%LOCALAPPDATA%\\Microsoft\\WinGet\\Packages\\BrechtSanders.WinLibs.POSIX.UCRT*\\mingw64\\bin"],
     "path_dirs_linux": ["/usr/bin"],
     "path_required": true
   },
@@ -63,10 +63,10 @@
     "description": "GNU C++ compiler",
     "category": "Compilers",
     "detect_cmd": "g++ --version",
-    "install_command_windows": "winget install --id MSYS2.MSYS2 -e --silent --accept-source-agreements --accept-package-agreements",
+    "install_command_windows": "winget install --id BrechtSanders.WinLibs.POSIX.UCRT -e --silent --accept-source-agreements --accept-package-agreements",
     "install_command_linux": "sudo apt-get install -y g++",
     "install_command_mac": "brew install gcc",
-    "path_dirs_windows": ["C:\\msys64\\mingw64\\bin"],
+    "path_dirs_windows": ["%LOCALAPPDATA%\\Microsoft\\WinGet\\Packages\\BrechtSanders.WinLibs.POSIX.UCRT*\\mingw64\\bin"],
     "path_required": true
   },
   {
@@ -89,10 +89,10 @@
     "description": "Minimalist GNU toolchain for Windows (C/C++)",
     "category": "Compilers",
     "detect_cmd": "gcc --version",
-    "install_command_windows": "winget install --id MSYS2.MSYS2 -e --silent --accept-source-agreements --accept-package-agreements",
+    "install_command_windows": "winget install --id BrechtSanders.WinLibs.POSIX.UCRT -e --silent --accept-source-agreements --accept-package-agreements",
     "install_command_linux": "sudo apt-get install -y build-essential",
     "install_command_mac": "brew install gcc",
-    "path_dirs_windows": ["C:\\msys64\\mingw64\\bin"],
+    "path_dirs_windows": ["%LOCALAPPDATA%\\Microsoft\\WinGet\\Packages\\BrechtSanders.WinLibs.POSIX.UCRT*\\mingw64\\bin"],
     "path_required": true
   },
   {
@@ -206,10 +206,10 @@
     "description": "Scientific and numeric computing compiler",
     "category": "Compilers",
     "detect_cmd": "gfortran --version",
-    "install_command_windows": "winget install --id MSYS2.MSYS2 -e --silent --accept-source-agreements --accept-package-agreements",
+    "install_command_windows": "winget install --id BrechtSanders.WinLibs.POSIX.UCRT -e --silent --accept-source-agreements --accept-package-agreements",
     "install_command_linux": "sudo apt-get install -y gfortran",
     "install_command_mac": "brew install gcc",
-    "path_dirs_windows": ["C:\\msys64\\mingw64\\bin"],
+    "path_dirs_windows": ["%LOCALAPPDATA%\\Microsoft\\WinGet\\Packages\\BrechtSanders.WinLibs.POSIX.UCRT*\\mingw64\\bin"],
     "path_required": true
   },
   {
