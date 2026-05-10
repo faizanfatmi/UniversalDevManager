@@ -26,6 +26,37 @@ jobs:
       - name: Build Windows executable
         run: uv run python scripts/build_exe.py
 
+      - name: Sign Windows executable
+        if: env.SIGN_CERT_PFX != ''
+        env:
+          SIGN_CERT_PFX: ${{ secrets.SIGN_CERT_PFX }}
+          SIGN_CERT_PASS: ${{ secrets.SIGN_CERT_PASS }}
+        shell: pwsh
+        run: |
+          # Decode PFX from base64 secret
+          $pfxBytes = [Convert]::FromBase64String($env:SIGN_CERT_PFX)
+          $pfxPath  = Join-Path $env:RUNNER_TEMP "code_signing.pfx"
+          [IO.File]::WriteAllBytes($pfxPath, $pfxBytes)
+
+          # Locate signtool from Windows SDK
+          $signtool = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin" -Recurse -Filter "signtool.exe" |
+                      Where-Object { $_.FullName -match "x64" } |
+                      Sort-Object FullName -Descending |
+                      Select-Object -First 1 -ExpandProperty FullName
+
+          if (-not $signtool) { Write-Error "signtool.exe not found"; exit 1 }
+
+          # Sign each exe
+          Get-ChildItem dist\*.exe | ForEach-Object {
+            Write-Host "Signing $($_.Name)..."
+            & $signtool sign /f $pfxPath /p $env:SIGN_CERT_PASS /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 /d "Universal Dev Manager" $_.FullName
+            if ($LASTEXITCODE -ne 0) { Write-Error "Signing failed for $($_.Name)"; exit 1 }
+            & $signtool verify /pa $_.FullName
+          }
+
+          # Clean up
+          Remove-Item $pfxPath -Force
+
       - uses: actions/upload-artifact@v7
         with:
           name: windows-exe
